@@ -2,72 +2,36 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/styles.css';
+import GiphyService from './js/giphy-service.js';
 
-$(document).ready(function(){
-  $('#search').click(function(){
-    const searchResults = $('#input').val();
-    $('#input').val("");
-
-    let request = new XMLHttpRequest();
-    const url = `http://api.giphy.com/v1/gifs/search?q=${searchResults}&api_key=KjU0nKpr1bYqn6lhjY7NWehiwTHe9CfF`
-    
-    request.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    };
-    request.open("GET", url, true);
-    request.send();
-
-    function getElements(response) {
-      $('.showGifs').html(`<iframe src="${response.data[0].embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);
-    }
-
+$('#search').click(function(){
+  const searchResults = $('#input').val();
+  $('#input').val("");
+  let promise = GiphyService.getGif(searchResults);
+  promise.then(function(response) {
+    const body = JSON.parse(response);
+    $('.showGifs').html(`<iframe src="${body.data[0].embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);      
+  }, function(error) {
+    $('.showErrors').text(`There was an error processing your request: ${error}`);
   });
 });
-  $(document).ready(function(){
-    $('#trending').click(function(){
-    
-  
-      let request = new XMLHttpRequest();
-      const url = `http://api.giphy.com/v1/gifs/trending?api_key=KjU0nKpr1bYqn6lhjY7NWehiwTHe9CfF`
-      
-      request.onreadystatechange = function() {
-        if (this.readyState === 4 && this.status === 200) {
-          const response = JSON.parse(this.responseText);
-          getElements(response);
-        }
-      };
-      request.open("GET", url, true);
-      request.send();
-  
-      function getElements(response) {
-        $('.trendingGifs').html(`<iframe src="${response.data[0].embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);
-      }
-    });
 
-    
+$('#trending').click(function(){
+  let promise = GiphyService.getTrending();
+  promise.then(function(response) {
+    const body = JSON.parse(response);
+    $('.trendingGifs').html(`<iframe src="${body.data[0].embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);
+  }, function(error) {
+    $('.showErrors').text(`There was an error processing your request: ${error}`);
+  });
 });
-$(document).ready(function(){
-  $('#random').click(function(){
-  
 
-    let request = new XMLHttpRequest();
-    const url = `http://api.giphy.com/v1/gifs/random?api_key=KjU0nKpr1bYqn6lhjY7NWehiwTHe9CfF`
-    
-    request.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    };
-    request.open("GET", url, true);
-    request.send();
-
-    function getElements(response) {
-      $('.randomGifs').html(`<iframe src="${response.data.embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);
-    }
-  
+$('#random').click(function(){
+  let promise = GiphyService.getRandom();
+  promise.then(function(response) {
+    const body = JSON.parse(response);
+    $('.randomGifs').html(`<iframe src="${body.data.embed_url}" width="480" height="270" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>`);
+  }, function(error) {
+    $('.showErrors').text(`There was an error processing your request: ${error}`);
   });
 });
