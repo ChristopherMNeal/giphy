@@ -2,7 +2,7 @@
 
 #### Created By _**Christopher Neal & Colt Thatcher**_
 
-#### _An application to_
+#### _An application to practice using APIs through GiphyAPI_
 
 ## Technologies Used
 
